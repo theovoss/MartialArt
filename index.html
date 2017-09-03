@@ -94,21 +94,6 @@
         var dropdown = document.getElementById("selectAVoice");
         return dropdown.options[dropdown.selectedIndex].text;
     }
-
-    var populateDefaults = function() {
-        var typeOfStrikes = "Labtik\nWitik\nSungkite";
-        var typeOfGrip = "Fist Width From Bottom\nBottom\nMiddle";
-        var minNumber = "1";
-        var maxNumber = "8";
-        var lengthOfSequence = "3";
-
-        document.getElementById("typeOfStrike").value = typeOfStrikes;
-        document.getElementById("grip").value = typeOfGrip;
-        document.getElementById("lowestNumber").value = minNumber;
-        document.getElementById("highestNumber").value = maxNumber;
-        document.getElementById("lengthOfSequence").value = lengthOfSequence;
-    }
-
-    populateDefaults();
+    
     populateVoices();
 </script>
