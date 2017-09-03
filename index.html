@@ -1,0 +1,114 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src='https://code.responsivevoice.org/responsivevoice.js'></script>
+<p id="currentSequence"/>
+<p>Number of minutes between calls</p>
+<input id="minutesPerIteration" type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57'></input>
+<p>Lowest Number in Numbering System</p>
+<input id="lowestNumber" type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>
+</input>
+<p>Highest Number in Numbering System</p>
+<input id="highestNumber" type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>
+</input>
+<p>Amount of Numbers to call out at a time</p>
+<input id="lengthOfSequence" type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>
+</input>
+<p>Grip</p>
+<textarea id="grip" name="grip" cols="40" rows="5"></textarea>
+<p>Type Of Strike</p>
+<textarea id="typeOfStrike" name="typeOfStrike" cols="40" rows="5"></textarea>
+<button id="start" type="button" onclick="start()">Start Training</button>
+<button id="stop" type="button" onclick="stop()">Stop Training</button>
+<p/>
+<select id="selectAVoice" onchange="setVoice()">
+    <option>Choose a Voice</option>
+</select>
+
+<p id="currentVoice">Not Set</p>
+
+<script>
+    var stop = function() {
+        window.clearInterval();
+    }
+
+    var start = function() {
+        var minutesBetweenCalls = document.getElementById("minutesPerIteration").value;
+
+        speak();
+        window.setInterval(speak, parseFloat(minutesBetweenCalls) * 1000 * 60);
+    }
+
+    var speak = function() {
+        var lowestNumber = document.getElementById("lowestNumber").value;
+        var highestNumber = document.getElementById("highestNumber").value;
+        var lengthOfSequence = document.getElementById("lengthOfSequence").value;
+        var grips = document.getElementById("grip").value.split('\n');
+        var typeOfStrikes = document.getElementById("typeOfStrike").value.split('\n');
+
+        var numbers = [];
+        for(var i = parseInt(lowestNumber); i <= parseInt(highestNumber); i++){
+            numbers.push(i);
+        }
+
+        var sequence = "";
+
+        sequence = sequence.concat("Grip: ", get_random(grips), ". ");
+        sequence = sequence.concat("Type of Strike: ", get_random(typeOfStrikes), ". ");
+
+
+        for(var i = 0; i < parseInt(lengthOfSequence); i++) {
+            sequence = sequence.concat(get_random(numbers), " ");
+        }
+
+        document.getElementById("currentSequence").innerText = sequence;
+
+        responsiveVoice.setDefaultVoice(getSelectedVoice())
+        responsiveVoice.speak(sequence);
+    }
+
+    var get_random = function (list) {
+        return list[Math.floor((Math.random()*list.length))];
+    }
+
+    var setVoice = function() {
+        var output = document.getElementById("currentVoice");
+        output.innerText = getSelectedVoice();;
+    }
+
+    var populateVoices = function() {
+        var defaultVoice = "US English Male";
+        var dropdown = document.getElementById("selectAVoice");
+        var voices = responsiveVoice.getVoices();
+        for(var i = 0; i < voices.length; ++i) {
+            var voice = voices[i].name.toString();
+            var option = new Option(voice, voice);
+            if(voice == defaultVoice) {
+                dropdown[dropdown.length - 1];
+                option.selected = "selected";
+            }
+            dropdown[dropdown.length] = option;
+        }
+        setVoice();
+    }
+
+    var getSelectedVoice = function() {
+        var dropdown = document.getElementById("selectAVoice");
+        return dropdown.options[dropdown.selectedIndex].text;
+    }
+
+    var populateDefaults = function() {
+        var typeOfStrikes = "Labtik\nWitik\nSungkite";
+        var typeOfGrip = "Fist Width From Bottom\nBottom\nMiddle";
+        var minNumber = "1";
+        var maxNumber = "8";
+        var lengthOfSequence = "3";
+
+        document.getElementById("typeOfStrike").value = typeOfStrikes;
+        document.getElementById("grip").value = typeOfGrip;
+        document.getElementById("lowestNumber").value = minNumber;
+        document.getElementById("highestNumber").value = maxNumber;
+        document.getElementById("lengthOfSequence").value = lengthOfSequence;
+    }
+
+    populateDefaults();
+    populateVoices();
+</script>
