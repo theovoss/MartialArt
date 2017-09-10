@@ -94,6 +94,47 @@
         var dropdown = document.getElementById("selectAVoice");
         return dropdown.options[dropdown.selectedIndex].text;
     }
-    
+
+    var getQueryParams = function() {
+        var urlParams;
+        (window.onpopstate = function () {
+            var match,
+                pl     = /\+/g,  // Regex for replacing addition symbol with a space
+                newline = /\-/g,
+                search = /([^&=]+)=?([^&]*)/g,
+                decode = function (s) { return decodeURIComponent(s.replace(pl, " ").replace(newline, "\n")); },
+                query  = window.location.search.substring(1);
+
+            urlParams = {};
+            while (match = search.exec(query))
+               urlParams[decode(match[1])] = decode(match[2]);
+        })();
+        return urlParams;
+    }
+
+    var populateFromUrl = function() {
+        var queryParams = getQueryParams();
+        var minutesPerIteration = queryParams['minutesPerIteration'];
+        var lowestNumber = queryParams['lowestNumber'];
+        var highestNumber = queryParams['highestNumber'];
+        var lengthOfSequence = queryParams['lengthOfSequence'];
+        var grips = queryParams['grips'];
+        var typeOfStrikes = queryParams['typeOfStrikes'];
+
+        setContent("minutesPerIteration", minutesPerIteration);
+        setContent("lowestNumber", lowestNumber);
+        setContent("highestNumber", highestNumber);
+        setContent("lengthOfSequence", lengthOfSequence);
+        setContent("grip", grips);
+        setContent("typeOfStrike", typeOfStrikes);
+    }
+
+    var setContent = function(field, data) {
+        if(data && data.length > 0) {
+            document.getElementById(field).value = data;
+        }
+    }
+
+    populateFromUrl();
     populateVoices();
 </script>
